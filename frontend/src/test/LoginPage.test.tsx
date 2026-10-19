@@ -94,3 +94,4 @@ describe('LoginPage Component', () => {
     expect(passInput.value).toBe('Password123!');
   });
 });
+

@@ -3,3 +3,4 @@ export interface ApiErrorDetail {
   statusCode: number;
   errors?: Record<string, string[]>;
 }
+

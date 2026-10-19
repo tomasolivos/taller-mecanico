@@ -67,3 +67,4 @@ export interface Repuesto {
   precio: number;
   stock: number;
 }
+

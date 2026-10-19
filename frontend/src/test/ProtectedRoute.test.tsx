@@ -99,3 +99,4 @@ describe('ProtectedRoute Guard', () => {
     expect(screen.getByText('Panel Solo Administrador')).toBeInTheDocument();
   });
 });
+

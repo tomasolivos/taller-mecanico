@@ -178,3 +178,4 @@ npm audit
 * [INFORME_TECNICO.md](INFORME_TECNICO.md): Informe técnico formal con la justificación de decisiones y matriz completa de riesgos mitigados.
 * [AI_LOG.md](AI_LOG.md): Bitácora de uso de Inteligencia Artificial Generativa (herramientas, modelos, prompts y decisiones).
 * [PRESENTACION.md](PRESENTACION.md): Diapositivas y guión de demostración en vivo para la exposición individual.
+

@@ -135,3 +135,4 @@ Content-Type: application/json
 2. **Diseño Responsivo Mobile-First:**
    * En anchos de pantalla `< 768px` (verificado en viewports de **320px**, **360px**, **390px** y **412px**), la tabla se oculta y se presenta una vista en tarjetas individuales (*cards*), eliminando el desplazamiento horizontal.
    * Todos los controles táctiles (botones de acción, selectores, campos de entrada) cumplen con el tamaño táctil mínimo de **44 × 44 px**.
+

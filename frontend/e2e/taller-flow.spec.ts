@@ -63,3 +63,4 @@ test.describe('Flujo End-to-End Taller Mecánico', () => {
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
   });
 });
+

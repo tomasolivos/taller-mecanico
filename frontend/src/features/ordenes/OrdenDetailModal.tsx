@@ -329,3 +329,4 @@ export const OrdenDetailModal: React.FC<OrdenDetailModalProps> = ({
     </Modal>
   );
 };
+

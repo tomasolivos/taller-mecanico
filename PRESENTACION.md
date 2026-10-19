@@ -157,3 +157,4 @@
   * **3 Pruebas de Integración en Backend (.NET):** OpenAPI y rechazo de solicitudes anónimas.
 * **Conclusión:**
   * Sistema integrado de extremo a extremo, resiliente ante entradas indebidas, estrictamente apegado a las normas de seguridad OWASP y accesible para todos los usuarios.
+

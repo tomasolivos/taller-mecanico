@@ -25,3 +25,4 @@ export const ordenesService = {
     await apiClient.delete(`/ordenes-trabajo/${id}`);
   },
 };
+

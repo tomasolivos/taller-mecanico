@@ -97,3 +97,4 @@ El uso de la herramienta de IA permitió acelerar significativamente la generaci
 1. Depurar conflictos de compilación en TypeScript y compatibilidad de herramientas de empaquetado.
 2. Garantizar la coherencia del modelo de negocio del Taller Mecánico entre la base de datos SQL Server, la API en .NET y la interfaz de usuario en React.
 3. Asegurar que las validaciones de seguridad se apliquen tanto en la capa de presentación (experiencia de usuario) como obligatoriamente en la capa del backend (regla de oro de OWASP).
+

@@ -131,3 +131,4 @@ Para asegurar la inclusión y cumplimiento de estándares internacionales de acc
 ## 8. Conclusiones
 
 La integración desarrollada cumple a cabalidad con los requerimientos técnicos y pedagógicos del Trabajo 2. Se construyó una aplicación React modular, segura y altamente accesible que consume la API RESTful existente, respeta el principio de menor privilegio con autorización por roles tanto en cliente como en servidor, y neutraliza los principales vectores de ataque señalados por OWASP, entregando un producto robusto y preparado para una demostración en vivo.
+

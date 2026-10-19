@@ -50,3 +50,4 @@ export interface OrdenTrabajoDTO {
   vehiculoId: number;
   mecanicoId: number;
 }
+

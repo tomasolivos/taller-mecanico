@@ -32,3 +32,4 @@ export const catalogService = {
     return response.data;
   },
 };
+
