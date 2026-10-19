@@ -5,6 +5,7 @@
 **Estudiante:** Tomás  
 **Docente:** Enso Guidotti  
 **Evaluación:** 100% de Evaluación 2  
+**Repositorio Oficial GitHub:** [https://github.com/tomasolivos/taller-mecanico](https://github.com/tomasolivos/taller-mecanico)
 
 ---
 

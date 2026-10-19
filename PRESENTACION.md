@@ -6,6 +6,7 @@
 **Estudiante:** Tomás  
 **Docente:** Enso Guidotti  
 **Tiempo Estimado:** 15 minutos  
+**Repositorio GitHub:** [https://github.com/tomasolivos/taller-mecanico](https://github.com/tomasolivos/taller-mecanico)  
 
 ---
 

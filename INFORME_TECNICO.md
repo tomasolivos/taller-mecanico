@@ -6,6 +6,7 @@
 **Estudiante:** Tomás  
 **Docente:** Enso Guidotti  
 **Fecha:** Octubre 2026  
+**Repositorio GitHub:** [https://github.com/tomasolivos/taller-mecanico](https://github.com/tomasolivos/taller-mecanico)
 
 ---
 
