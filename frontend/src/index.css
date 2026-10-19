@@ -1,0 +1,179 @@
+/* ==========================================================================
+   TALLER MECÁNICO - ACCESSIBLE & RESPONSIVE DESIGN SYSTEM (WCAG 2.2 AA)
+   ========================================================================== */
+
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --bg-color: #f8fafc;
+  --surface-color: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-color: #e2e8f0;
+  --danger-color: #dc2626;
+  --danger-bg: #fee2e2;
+  --success-color: #16a34a;
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Skip to Main Content Link (WCAG 2.4.1) --- */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 1rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  border-radius: 0 0 6px 6px;
+  z-index: 9999;
+  text-decoration: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  transition: top 0.2s ease-in-out;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #facc15;
+}
+
+/* --- Focus Indicator Visible (WCAG 2.4.7 / 2.4.11) --- */
+*:focus-visible {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 2px !important;
+}
+
+/* --- Responsive Containers & Touch Targets (WCAG 2.5.5 >= 44x44px) --- */
+button, input, select, textarea, a {
+  font-family: inherit;
+}
+
+button:focus, a:focus, input:focus, select:focus, textarea:focus {
+  outline-offset: 2px;
+}
+
+/* --- Header & Navigation --- */
+.site-header {
+  border-bottom: 1px solid #1e293b;
+}
+
+.main-nav-menu {
+  display: block;
+}
+
+/* --- Responsive Table vs Mobile Cards --- */
+.table-responsive-wrapper {
+  display: block;
+}
+
+.mobile-cards-container {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .table-responsive-wrapper {
+    display: none !important;
+  }
+
+  .mobile-cards-container {
+    display: flex !important;
+  }
+
+  .mobile-toggle-btn {
+    display: flex !important;
+  }
+
+  .main-nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #0f172a;
+    padding: 1rem;
+    border-bottom: 2px solid #2563eb;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+
+  .main-nav-menu.is-open {
+    display: block;
+  }
+
+  .main-nav-menu .nav-list {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .user-profile-badge {
+    margin-left: 0 !important;
+    justify-content: center !important;
+    padding: 0.75rem !important;
+  }
+
+  .btn-logout {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+}
+
+/* --- Utility Screen Reader Only (WCAG 1.3.1) --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* --- Footer --- */
+.site-footer {
+  margin-top: auto;
+  background-color: #ffffff;
+  border-top: 1px solid var(--border-color);
+  padding: 1.5rem 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* --- Spin Animation --- */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
