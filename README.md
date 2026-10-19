@@ -47,7 +47,7 @@ TallerMecanico/
 ├── .env.example                  # Variables de entorno backend de ejemplo
 ├── INFORME_TECNICO.md            # Informe técnico de decisiones de diseño y matriz OWASP
 ├── AI_LOG.md                     # Bitácora detallada de uso de Inteligencia Artificial Generativa
-├── PRESENTACION.md               # Diapositivas y guión de demostración en vivo
+├── EVIDENCIAS.md                 # Evidencias de pruebas y validaciones de seguridad
 └── README.md                     # Este archivo con instrucciones de ejecución
 ```
 
@@ -178,5 +178,5 @@ npm audit
 
 * [INFORME_TECNICO.md](INFORME_TECNICO.md): Informe técnico formal con la justificación de decisiones y matriz completa de riesgos mitigados.
 * [AI_LOG.md](AI_LOG.md): Bitácora de uso de Inteligencia Artificial Generativa (herramientas, modelos, prompts y decisiones).
-* [PRESENTACION.md](PRESENTACION.md): Diapositivas y guión de demostración en vivo para la exposición individual.
+* [EVIDENCIAS.md](EVIDENCIAS.md): Registros y evidencias de ejecución de pruebas unitarias, integración backend y controles de seguridad.
 
