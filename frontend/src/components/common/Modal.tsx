@@ -158,10 +158,12 @@ export const Modal: React.FC<ModalProps> = ({
           </button>
         </header>
         <div
+          className="modal-body"
           style={{
             padding: '1.5rem',
             overflowY: 'auto',
             flex: 1,
+            WebkitOverflowScrolling: 'touch',
           }}
         >
           {children}

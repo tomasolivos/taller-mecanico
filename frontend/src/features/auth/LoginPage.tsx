@@ -72,13 +72,14 @@ export const LoginPage: React.FC = () => {
     <main
       id="main-content"
       role="main"
+      className="login-container"
       style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#0f172a',
-        padding: '1.5rem',
+        padding: '1.5rem 1rem',
       }}
     >
       <div
@@ -311,7 +312,7 @@ export const LoginPage: React.FC = () => {
           >
             Credenciales de Prueba (Demostración)
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.625rem' }}>
+          <div className="demo-buttons-grid" style={{ display: 'grid', gap: '0.625rem' }}>
             <button
               type="button"
               onClick={() => handleQuickFill('admin')}

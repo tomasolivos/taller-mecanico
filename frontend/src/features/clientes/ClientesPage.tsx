@@ -215,11 +215,7 @@ export const ClientesPage: React.FC = () => {
         />
       ) : (
         <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-            gap: '1rem',
-          }}
+          className="responsive-grid-cards"
         >
           {filteredClientes.map((c) => (
             <article

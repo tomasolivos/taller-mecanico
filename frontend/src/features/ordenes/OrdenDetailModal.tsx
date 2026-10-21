@@ -106,7 +106,7 @@ export const OrdenDetailModal: React.FC<OrdenDetailModalProps> = ({
             <User aria-hidden="true" style={{ width: 18, height: 18, color: '#2563eb' }} />
             <span>Datos del Cliente</span>
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.5rem', fontSize: '0.9rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '0.5rem', fontSize: '0.9rem' }}>
             <div>
               <span style={{ color: '#64748b' }}>Nombre: </span>
               <strong>{orden.cliente ? `${orden.cliente.nombre} ${orden.cliente.apellido}` : `Cliente #${orden.clienteId}`}</strong>
@@ -127,7 +127,7 @@ export const OrdenDetailModal: React.FC<OrdenDetailModalProps> = ({
         </section>
 
         {/* Información del Vehículo y Mecánico */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '1rem' }}>
           <section
             aria-labelledby="detail-vehiculo-title"
             style={{

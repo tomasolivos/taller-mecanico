@@ -274,7 +274,7 @@ export const OrdenFormModal: React.FC<OrdenFormModalProps> = ({
           </div>
 
           {/* Fecha y Estado en dos columnas */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="form-row-2col">
             <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
               <label htmlFor="fechaIngreso" style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1e293b' }}>
                 Fecha de Ingreso <span aria-hidden="true" style={{ color: '#dc2626' }}>*</span>
@@ -367,11 +367,9 @@ export const OrdenFormModal: React.FC<OrdenFormModalProps> = ({
 
           {/* Botones de Acción */}
           <div
+            className="modal-actions"
             style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '0.75rem',
-              marginTop: '1rem',
+              marginTop: '1.25rem',
             }}
           >
             <button

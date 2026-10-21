@@ -51,11 +51,9 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </div>
 
         <div
+          className="modal-actions"
           style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: '0.75rem',
-            marginTop: '0.5rem',
+            marginTop: '0.75rem',
           }}
         >
           <button

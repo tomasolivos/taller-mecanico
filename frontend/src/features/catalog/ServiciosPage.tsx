@@ -50,7 +50,7 @@ export const ServiciosPage: React.FC = () => {
       {isLoading ? (
         <LoadingSpinner message="Cargando catálogo de servicios y repuestos..." />
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+        <div className="servicios-repuestos-grid" style={{ display: 'grid', gap: '2rem' }}>
           {/* Servicios */}
           <section aria-labelledby="servicios-heading">
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
