@@ -79,49 +79,212 @@ found 0 vulnerabilities
 ## 4. Evidencia de Controles de Seguridad en Tiempo de Ejecución
 
 ### 4.1 Bloqueo de Acceso Anónimo (401 Unauthorized)
-Solicitud `GET` a `/api/v1/ordenes-trabajo` sin token en el encabezado `Authorization`:
-```powershell
-Invoke-RestMethod -Uri "http://localhost:5000/api/v1/ordenes-trabajo" -Method Get
-# Resultado: Error en el servidor remoto: (401) No autorizado.
+Solicitud `GET` a recurso protegido `/api/v1/ordenes-trabajo` sin encabezado `Authorization`:
+
+```bash
+$ curl -i -s http://localhost:5000/api/v1/ordenes-trabajo
 ```
+
+**Registro de Respuesta del Servidor:**
+```http
+HTTP/1.1 401 Unauthorized
+Content-Length: 0
+Date: Wed, 21 Oct 2026 01:51:41 GMT
+Server: Kestrel
+WWW-Authenticate: Bearer
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+```
+* **Análisis:** La API rechaza inmediatamente la petición por falta de credenciales JWT válidas y expone el esquema exigido `WWW-Authenticate: Bearer` junto a las cabeceras de endurecimiento HTTP.
+
+---
 
 ### 4.2 Autorización por Rol y Bloqueo 403 Forbidden (OWASP API5:2023)
-Solicitud `DELETE` a `/api/v1/ordenes-trabajo/{id}` autenticada con token del usuario `mecanico`:
+Intento de eliminación de orden de trabajo `DELETE /api/v1/ordenes-trabajo/1` utilizando el token JWT del rol **Mecanico**:
+
 ```powershell
-$headers = @{ "Authorization" = "Bearer $tokenMecanico" }
-Invoke-WebRequest -Uri "http://localhost:5000/api/v1/ordenes-trabajo/3" -Method Delete -Headers $headers
-# Resultado: StatusCode: 403 (Forbidden)
-# Mensaje: "Acceso denegado: El rol 'Mecanico' no tiene autorización para eliminar registros."
-```
-En contraparte, el token del usuario `admin` realiza la operación con éxito (**204 No Content**).
+# 1. Obtención de token con rol Mecanico
+$login = Invoke-RestMethod -Uri "http://localhost:5000/api/v1/usuarios/login" -Method Post -ContentType "application/json" -Body '{"nombreUsuario":"mecanico","password":"Password123!"}'
+$tokenMecanico = $login.token
 
-### 4.3 Verificación de Cabeceras HTTP de Seguridad (OWASP API8:2023)
-Inspección de encabezados devueltos por el servidor Kestrel en cada respuesta:
-```
-Key                    Value
----                    -----
-X-Content-Type-Options nosniff
-X-Frame-Options        DENY
-X-XSS-Protection       1; mode=block
-Referrer-Policy        strict-origin-when-cross-origin
-Permissions-Policy     camera=(), microphone=(), geolocation=()
+# 2. Intento de ejecutar DELETE con privilegios insuficientes
+curl -i -s -X DELETE "http://localhost:5000/api/v1/ordenes-trabajo/1" -H "Authorization: Bearer $tokenMecanico"
 ```
 
-### 4.4 Política de Orígenes Cruzados (CORS Restrictivo)
-Configuración en `Program.cs` restringe el acceso exclusivamente a los orígenes autorizados del frontend:
-* `http://localhost:5173` (Vite dev server)
-* `http://localhost:3000` (React alternativo)
-* `http://127.0.0.1:5173`
-Cualquier solicitud originada desde un dominio o puerto no declarado es rechazada por la política del navegador antes de procesarse.
-
-### 4.5 Límite de Tasa (Rate Limiting - OWASP API4:2023)
-* Política `LoginRateLimit`: 10 solicitudes permitidas por minuto por dirección IP.
-* En el intento #11 en una ventana de 60 segundos, la API devuelve:
+**Registro de Respuesta del Servidor:**
+```http
+HTTP/1.1 403 Forbidden
+Content-Length: 0
+Date: Wed, 21 Oct 2026 01:51:54 GMT
+Server: Kestrel
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
 ```
+* **Análisis:** Aunque el usuario está debidamente autenticado con JWT válido, el atributo `.RequireAuthorization(new AuthorizeAttribute { Roles = "Admin" })` valida que su rol no posee privilegios administrativos y bloquea la operación con **403 Forbidden**. En contraparte, una solicitud con el token de `admin` es procesada exitosamente con `204 No Content`.
+
+---
+
+### 4.3 Bloqueo y Restricción por Política de Orígenes Cruzados (CORS)
+
+#### Caso A: Solicitud Preflight desde Origen Autorizado (`http://localhost:5173`)
+```bash
+$ curl -i -s -X OPTIONS http://localhost:5000/api/v1/ordenes-trabajo \
+  -H "Origin: http://localhost:5173" \
+  -H "Access-Control-Request-Method: GET"
+```
+
+**Registro de Respuesta:**
+```http
+HTTP/1.1 204 No Content
+Date: Wed, 21 Oct 2026 01:52:10 GMT
+Server: Kestrel
+Access-Control-Allow-Methods: GET
+Access-Control-Allow-Origin: http://localhost:5173
+Vary: Origin
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+```
+* **Resultado:** La API autoriza la comunicación retornando explícitamente `Access-Control-Allow-Origin: http://localhost:5173`.
+
+#### Caso B: Solicitud Preflight desde Origen No Autorizado (`https://sitio-malicioso.com`)
+```bash
+$ curl -i -s -X OPTIONS http://localhost:5000/api/v1/ordenes-trabajo \
+  -H "Origin: https://sitio-malicioso.com" \
+  -H "Access-Control-Request-Method: GET"
+```
+
+**Registro de Respuesta:**
+```http
+HTTP/1.1 204 No Content
+Date: Wed, 21 Oct 2026 01:52:15 GMT
+Server: Kestrel
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+```
+* **Resultado y Bloqueo:** La API **omite completamente la cabecera `Access-Control-Allow-Origin`**. Ante esto, el motor de seguridad del navegador web bloquea de inmediato la petición con el siguiente error:
+  `Access to fetch at 'http://localhost:5000/api/v1/ordenes-trabajo' from origin 'https://sitio-malicioso.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
+
+---
+
+### 4.4 Neutralización de Entradas Maliciosas (SQLi, XSS y Validación Estricta)
+
+#### A. Neutralización de Intento de Inyección SQL (SQLi)
+Envío de payload clásico de derivación de autenticación (`admin' OR '1'='1 --`):
+
+```powershell
+$body = @{ nombreUsuario = "admin' OR '1'='1 --"; password = "Password123!" } | ConvertTo-Json
+Invoke-WebRequest -Uri "http://localhost:5000/api/v1/usuarios/login" -Method Post -ContentType "application/json" -Body $body
+```
+
+**Registro:**
+```
+Status: 401
+StatusDescription: Unauthorized
+```
+* **Análisis:** Entity Framework Core parametrizó automáticamente la consulta LINQ/SQL (`GetUsuarioConRolByNombreAsync`), tratando el valor malicioso estrictamente como un literal de texto y neutralizando cualquier intento de inyección o bypass.
+
+#### B. Neutralización de Scripting entre Sitios (XSS)
+Envío de payload malicioso `<script>alert('XSS-Attack')</script><img src=x onerror=alert('PWNED')>` en el campo de observaciones:
+
+```powershell
+$loginAdmin = Invoke-RestMethod -Uri "http://localhost:5000/api/v1/usuarios/login" -Method Post -ContentType "application/json" -Body '{"nombreUsuario":"admin","password":"Password123!"}'
+$xssBody = @{
+    clienteId = 1
+    vehiculoId = 1
+    mecanicoId = 1
+    fechaIngreso = "2026-10-21T00:00:00Z"
+    estado = "Pendiente"
+    observaciones = "<script>alert('XSS-Attack')</script><img src=x onerror=alert('PWNED')>"
+} | ConvertTo-Json
+$headers = @{ "Authorization" = "Bearer $($loginAdmin.token)" }
+Invoke-RestMethod -Uri "http://localhost:5000/api/v1/ordenes-trabajo" -Method Post -Headers $headers -ContentType "application/json" -Body $xssBody
+```
+
+**Mecanismo de Neutralización:**
+1. **Frontend React:** La aplicación no utiliza `dangerouslySetInnerHTML` (`git grep "dangerouslySetInnerHTML"` devuelve 0 resultados). El renderizado mediante expresiones JSX `{orden.observaciones}` fuerza la creación de nodos de texto DOM planos (`TextNode`), escapando automáticamente los caracteres `<`, `>`, `"` y `&`.
+2. **Cabeceras HTTP:** El servidor emite `X-Content-Type-Options: nosniff` y `X-XSS-Protection: 1; mode=block`.
+
+#### C. Validación de Contrato DTO con RFC 9110 (400 Bad Request)
+Envío de datos malformados o vacíos a `/api/v1/ordenes-trabajo`:
+
+```powershell
+$invalidBody = @{
+    clienteId = 0
+    vehiculoId = 0
+    mecanicoId = 0
+    fechaIngreso = "2026-10-21T00:00:00Z"
+    estado = ""
+} | ConvertTo-Json
+Invoke-WebRequest -Uri "http://localhost:5000/api/v1/ordenes-trabajo" -Method Post -Headers $headers -ContentType "application/json" -Body $invalidBody
+```
+
+**Registro de Respuesta:**
+```json
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+
+{
+  "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+  "title": "One or more validation errors occurred.",
+  "status": 400,
+  "errors": {
+    "Estado": ["El estado de la orden es obligatorio."],
+    "ClienteId": ["Debe seleccionar un cliente válido."],
+    "VehiculoId": ["Debe seleccionar un vehículo válido."],
+    "MecanicoId": ["Debe seleccionar un mecánico válido."]
+  }
+}
+```
+
+---
+
+### 4.5 Límite de Tasa (Rate Limiting - 429 Too Many Requests - OWASP API4:2023)
+Envío de ráfaga automatizada de solicitudes consecutivas al endpoint sensible `/api/v1/usuarios/login` para superar la cuota de 10 peticiones por minuto por IP:
+
+```powershell
+1..12 | ForEach-Object {
+    $res = curl.exe -s -o /dev/null -w "%{http_code}" -X POST http://localhost:5000/api/v1/usuarios/login -H "Content-Type: application/json" -d '{"nombreUsuario":"admin","password":"Password123!"}'
+    Write-Output "Intento $_ -> HTTP: $res"
+}
+```
+
+**Registro de Ejecución:**
+```
+Intento 1  -> HTTP: 200
+Intento 2  -> HTTP: 200
+...
+Intento 9  -> HTTP: 200
+Intento 10 -> HTTP: 200
+Intento 11 -> HTTP: 429
+Intento 12 -> HTTP: 429
+```
+
+**Encabezados HTTP devueltos en el Intento #11:**
+```http
 HTTP/1.1 429 Too Many Requests
-Content-Type: application/json
+Content-Length: 0
+Date: Wed, 21 Oct 2026 01:53:12 GMT
+Server: Kestrel
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
 ```
-* El frontend captura el código 429 en el interceptor de Axios y muestra la notificación clara al usuario sin caerse ni bloquear la aplicación.
+* **Comportamiento en Frontend:** El interceptor de Axios en `src/services/apiClient.ts` captura el status `429` y despliega la alerta accesible:  
+  *"Límite de solicitudes alcanzado (Rate Limit). Espere un minuto antes de intentar nuevamente."* Evitando fallos no controlados.
 
 ---
 
