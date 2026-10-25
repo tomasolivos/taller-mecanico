@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export const OrdenesListPage: React.FC = () => {
-  const { user, isAdmin } = useAuth();
+  const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
 
   // Estados de interfaz y filtrado
@@ -532,51 +532,27 @@ export const OrdenesListPage: React.FC = () => {
                           <Edit aria-hidden="true" style={{ width: 18, height: 18 }} />
                         </button>
 
-                        {/* Botón Eliminar - Condicionado por rol (OWASP API5:2023) */}
-                        {isAdmin ? (
-                          <button
-                            type="button"
-                            onClick={() => setDeletingOrdenId(orden.ordenId)}
-                            aria-label={`Eliminar orden #${orden.ordenId}`}
-                            className="btn-action-icon btn-action-danger"
-                            style={{
-                              minWidth: 44,
-                              minHeight: 44,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              background: '#fef2f2',
-                              border: '1px solid #fecaca',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              color: '#dc2626',
-                            }}
-                          >
-                            <Trash2 aria-hidden="true" style={{ width: 18, height: 18 }} />
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            disabled
-                            aria-label={`Eliminar orden #${orden.ordenId} bloqueado para rol ${user?.rol}`}
-                            title="Solo el rol Administrador puede eliminar órdenes (OWASP Control de Acceso)"
-                            style={{
-                              minWidth: 44,
-                              minHeight: 44,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              background: '#f1f5f9',
-                              border: '1px solid #e2e8f0',
-                              borderRadius: '6px',
-                              cursor: 'not-allowed',
-                              color: '#94a3b8',
-                              opacity: 0.6,
-                            }}
-                          >
-                            <Trash2 aria-hidden="true" style={{ width: 18, height: 18 }} />
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => setDeletingOrdenId(orden.ordenId)}
+                          aria-label={`Eliminar orden #${orden.ordenId}`}
+                          title={isAdmin ? 'Eliminar orden' : 'La API verificará si tienes permiso para eliminar'}
+                          className="btn-action-icon btn-action-danger"
+                          style={{
+                            minWidth: 44,
+                            minHeight: 44,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: '#fef2f2',
+                            border: '1px solid #fecaca',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            color: '#dc2626',
+                          }}
+                        >
+                          <Trash2 aria-hidden="true" style={{ width: 18, height: 18 }} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -682,30 +658,29 @@ export const OrdenesListPage: React.FC = () => {
                     <span>Editar</span>
                   </button>
 
-                  {isAdmin && (
-                    <button
-                      type="button"
-                      onClick={() => setDeletingOrdenId(orden.ordenId)}
-                      className="btn btn-danger"
-                      style={{
-                        flex: 1,
-                        minHeight: 44,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.25rem',
-                        borderRadius: '6px',
-                        border: 'none',
-                        backgroundColor: '#fee2e2',
-                        color: '#dc2626',
-                        fontWeight: 600,
-                        fontSize: '0.85rem',
-                      }}
-                    >
-                      <Trash2 aria-hidden="true" style={{ width: 16, height: 16 }} />
-                      <span>Borrar</span>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setDeletingOrdenId(orden.ordenId)}
+                    className="btn btn-danger"
+                    title={isAdmin ? 'Eliminar orden' : 'La API verificará si tienes permiso para eliminar'}
+                    style={{
+                      flex: 1,
+                      minHeight: 44,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.25rem',
+                      borderRadius: '6px',
+                      border: 'none',
+                      backgroundColor: '#fee2e2',
+                      color: '#dc2626',
+                      fontWeight: 600,
+                      fontSize: '0.85rem',
+                    }}
+                  >
+                    <Trash2 aria-hidden="true" style={{ width: 16, height: 16 }} />
+                    <span>Borrar</span>
+                  </button>
                 </div>
               </article>
             ))}
@@ -752,7 +727,7 @@ export const OrdenesListPage: React.FC = () => {
       <ConfirmDialog
         isOpen={deletingOrdenId !== null}
         title="Confirmar Eliminación"
-        message={`¿Está seguro de que desea eliminar permanentemente la orden de trabajo #${deletingOrdenId}? Esta acción no se puede deshacer y requiere permisos de Administrador.`}
+        message={`¿Está seguro de que desea eliminar permanentemente la orden de trabajo #${deletingOrdenId}? La API validará los permisos; los mecánicos recibirán 403 Forbidden.`}
         confirmText="Eliminar Orden"
         cancelText="Cancelar"
         isDangerous={true}

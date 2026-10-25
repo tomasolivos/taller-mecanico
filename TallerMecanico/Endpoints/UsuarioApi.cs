@@ -8,6 +8,7 @@ using System.Text;
 using TallerMecanico.ValidacionesDTO;
 using Microsoft.AspNetCore.Authorization;
 using TallerMecanico.Repositories;
+using System.ComponentModel.DataAnnotations;
 
 namespace TallerMecanico.Endpoints
 {
@@ -39,19 +40,15 @@ namespace TallerMecanico.Endpoints
                 }).AllowAnonymous();
 
             user.MapPost("/login", async (LoginRequest login, [Microsoft.AspNetCore.Mvc.FromServices] IUsuarioRepository usuarioRepo,
-                IConfiguration config) =>
+                IConfiguration config, AuthService auth) =>
             {
-                var usuario = await usuarioRepo.GetUsuarioConRolByNombreAsync(login.NombreUsuario);
-
                 if (login.Validar() is { } errorDeValidacion) return errorDeValidacion;
 
+                var usuario = await usuarioRepo.GetUsuarioConRolByNombreAsync(login.NombreUsuario);
                 if (usuario is null)
                     return Results.Unauthorized();
 
-                var hasher = new PasswordHasher<Usuario>();
-                var resultado = hasher.VerifyHashedPassword(
-                    usuario, usuario.PasswordHash, login.Password);
-
+                var resultado = auth.VerifyPassword(usuario, login.Password);
                 if (resultado == PasswordVerificationResult.Failed)
                     return Results.Unauthorized();
 
@@ -91,8 +88,13 @@ namespace TallerMecanico.Endpoints
             .AllowAnonymous()
             .RequireRateLimiting("LoginRateLimit");
         }
-        public record LoginRequest(string NombreUsuario, string Password);
+        public record LoginRequest(
+            [property: Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
+            [property: MinLength(3, ErrorMessage = "El nombre de usuario debe tener al menos 3 caracteres.")]
+            string NombreUsuario,
+            [property: Required(ErrorMessage = "La contraseña es obligatoria.")]
+            [property: MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres.")]
+            string Password);
     }
 }
-
 

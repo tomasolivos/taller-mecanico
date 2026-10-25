@@ -10,7 +10,7 @@ namespace TallerMecanico.Services
         {
             return hasher.HashPassword(usuario, password);
         }
-        public PasswordVerificationResult VerifyPassowrd(Usuario usuario, string passwordIntento)
+        public PasswordVerificationResult VerifyPassword(Usuario usuario, string passwordIntento)
         {
             return hasher.VerifyHashedPassword(usuario, usuario.PasswordHash, passwordIntento);
         }

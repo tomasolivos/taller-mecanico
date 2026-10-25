@@ -110,7 +110,12 @@ describe('OrdenesListPage CRUD and Role Authorization', () => {
     });
   });
 
-  it('el rol Mecánico debe tener el botón de eliminar deshabilitado o bloqueado por seguridad OWASP', async () => {
+  it('el rol Mecánico puede intentar eliminar y la API rechaza la solicitud con 403', async () => {
+    vi.spyOn(ordenesService, 'deleteOrden').mockRejectedValue({
+      statusCode: 403,
+      message: 'Acceso denegado',
+    });
+
     vi.spyOn(AuthContext, 'useAuth').mockReturnValue({
       user: { usuarioId: 2, nombre: 'mecanico', correo: 'mecanico@taller.local', rol: 'Mecanico' },
       token: 'jwt-mec',
@@ -129,9 +134,17 @@ describe('OrdenesListPage CRUD and Role Authorization', () => {
     );
 
     await waitFor(() => {
-      const disabledDeleteBtns = screen.getAllByLabelText(/eliminar orden #101 bloqueado/i);
-      expect(disabledDeleteBtns[0]).toBeInTheDocument();
-      expect(disabledDeleteBtns[0]).toBeDisabled();
+      const deleteButton = screen.getAllByLabelText('Eliminar orden #101')[0];
+      expect(deleteButton).toBeInTheDocument();
+      expect(deleteButton).toBeEnabled();
+    });
+
+    fireEvent.click(screen.getAllByLabelText('Eliminar orden #101')[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'Eliminar Orden' }));
+
+    await waitFor(() => {
+      expect(ordenesService.deleteOrden).toHaveBeenCalledWith(101);
+      expect(screen.getByRole('alert')).toHaveTextContent(/403.*solo el rol administrador/i);
     });
   });
 
@@ -197,4 +210,3 @@ describe('OrdenesListPage CRUD and Role Authorization', () => {
     });
   });
 });
-

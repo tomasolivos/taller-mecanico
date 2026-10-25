@@ -169,6 +169,13 @@ using (var scope = app.Services.CreateScope())
         {
             context.Database.Migrate();
         }
+
+        if (app.Environment.IsDevelopment())
+        {
+            await DevelopmentDataSeeder.SeedAsync(
+                context,
+                services.GetRequiredService<AuthService>());
+        }
     }
     catch (Exception ex)
     {

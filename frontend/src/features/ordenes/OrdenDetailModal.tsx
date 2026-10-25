@@ -279,32 +279,31 @@ export const OrdenDetailModal: React.FC<OrdenDetailModalProps> = ({
               <span>Editar</span>
             </button>
 
-            {isAdmin && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onDelete(orden.ordenId);
-                }}
-                className="btn btn-danger"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.375rem',
-                  minHeight: 44,
-                  padding: '0.5rem 1rem',
-                  borderRadius: '6px',
-                  border: 'none',
-                  backgroundColor: '#fee2e2',
-                  color: '#dc2626',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                <Trash2 aria-hidden="true" style={{ width: 16, height: 16 }} />
-                <span>Eliminar (Admin)</span>
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onDelete(orden.ordenId);
+              }}
+              className="btn btn-danger"
+              title={isAdmin ? 'Eliminar orden' : 'La API verificará si tienes permiso para eliminar'}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.375rem',
+                minHeight: 44,
+                padding: '0.5rem 1rem',
+                borderRadius: '6px',
+                border: 'none',
+                backgroundColor: '#fee2e2',
+                color: '#dc2626',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              <Trash2 aria-hidden="true" style={{ width: 16, height: 16 }} />
+              <span>Eliminar</span>
+            </button>
           </div>
 
           <button
@@ -329,4 +328,3 @@ export const OrdenDetailModal: React.FC<OrdenDetailModalProps> = ({
     </Modal>
   );
 };
-

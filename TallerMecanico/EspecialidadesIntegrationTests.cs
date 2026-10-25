@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ public sealed class EspecialidadesIntegrationTests : IClassFixture<WebApplicatio
             {
                 services.RemoveAll<DbContextOptions<TallerMecanicoDbContext>>();
                 services.RemoveAll<TallerMecanicoDbContext>();
+                services.RemoveAll<IDbContextOptionsConfiguration<TallerMecanicoDbContext>>();
                 services.AddDbContext<TallerMecanicoDbContext>(options =>
                     options.UseInMemoryDatabase("TallerMecanicoTests"));
             });
@@ -51,6 +53,41 @@ public sealed class EspecialidadesIntegrationTests : IClassFixture<WebApplicatio
         var response = await client.GetAsync("/api/v1/especialidad/");
 
         Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Theory]
+    [InlineData("admin", "Admin")]
+    [InlineData("mecanico", "Mecanico")]
+    public async Task Login_acepta_las_credenciales_de_demostracion(string nombreUsuario, string rol)
+    {
+        var client = _factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/v1/usuarios/login", new
+        {
+            nombreUsuario,
+            password = "Password123!"
+        });
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        Assert.True(
+            response.StatusCode == System.Net.HttpStatusCode.OK,
+            $"Se esperaba 200 OK y se recibió {(int)response.StatusCode}: {responseBody}");
+        using var result = JsonDocument.Parse(responseBody);
+        Assert.False(string.IsNullOrWhiteSpace(result.RootElement.GetProperty("token").GetString()));
+        Assert.Equal(
+            rol,
+            result.RootElement.GetProperty("usuario").GetProperty("rol").GetString());
+
+        if (rol == "Mecanico")
+        {
+            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Bearer",
+                result.RootElement.GetProperty("token").GetString());
+
+            var deleteResponse = await client.DeleteAsync("/api/v1/ordenes-trabajo/999999");
+
+            Assert.Equal(System.Net.HttpStatusCode.Forbidden, deleteResponse.StatusCode);
+        }
     }
 
     [Fact]

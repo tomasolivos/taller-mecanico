@@ -11,35 +11,39 @@
 
 ## 1. Evidencia de Pruebas Automatizadas de Frontend (Vitest)
 
-Ejecución de la suite de 12 pruebas de componentes en el frontend (`npm test`):
+Ejecución de la suite completa de 14 pruebas de componentes e integración en el frontend (`npm test` o `npm.cmd test -- --run`):
 
 ```
 > frontend@0.0.0 test
-> vitest run
+> vitest run --run
 
  RUN  v5.0.5 C:/Users/tomas/Downloads/TallerMecanico/TallerMecanico/frontend
 
- ✓ src/test/ProtectedRoute.test.tsx (3 tests) 62ms
+ ✓ src/test/ProtectedRoute.test.tsx (3 tests) 58ms
    ✓ debe redirigir al login si el usuario no está autenticado
    ✓ debe redirigir a acceso denegado (403) si el usuario no tiene el rol permitido
    ✓ debe renderizar el contenido protegido cuando el usuario cumple con la autenticación y el rol
 
- ✓ src/test/LoginPage.test.tsx (4 tests) 349ms
+ ✓ src/test/LoginPage.test.tsx (4 tests) 434ms
    ✓ debe renderizar el título, los campos de formulario y botones accesibles
    ✓ debe mostrar errores de validación en cliente (Zod) si los campos están vacíos
    ✓ debe llamar a login con los valores ingresados al enviar el formulario válido
    ✓ debe permitir autocompletar credenciales de demostración para pruebas rápidas
 
- ✓ src/test/OrdenesCrud.test.tsx (5 tests) 497ms
+ ✓ src/test/FlowIntegration.test.tsx (2 tests) 419ms
+   ✓ debe autenticar credenciales válidas y llamar al servicio de login
+   ✓ debe completar el flujo integral de negocio: listar orden en tabla y consultar detalle
+
+ ✓ src/test/OrdenesCrud.test.tsx (5 tests) 593ms
    ✓ debe listar las órdenes de trabajo recibidas desde la API con su estado y datos asociados
    ✓ el rol Administrador debe tener visible y habilitado el botón de eliminar
    ✓ el rol Mecánico debe tener el botón de eliminar deshabilitado o bloqueado por seguridad OWASP
    ✓ debe filtrar reactivamente el listado al escribir en la barra de búsqueda
    ✓ debe abrir el modal de creación de orden al presionar "Nueva Orden"
 
- Test Files  3 passed (3)
-      Tests  12 passed (12)
-   Duration  2.44s
+ Test Files  4 passed (4)
+      Tests  14 passed (14)
+   Duration  2.85s
 ```
 
 ---

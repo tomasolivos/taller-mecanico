@@ -1,15 +1,13 @@
 # Sistema de Gestión de Taller Mecánico - Trabajo 2: Frontend, Consumo de API y Seguridad
 
 **Asignatura:** Lenguaje Programación Web II  
-**Unidad Temática:** UT2: Consumo de APIs RESTful desde aplicaciones frontend y seguridad  
-**Estudiante:** Tomás  
+**Estudiante:** Tomás Olivos
 **Docente:** Enso Guidotti  
-**Evaluación:** 100% de Evaluación 2  
 **Repositorio Oficial GitHub:** [https://github.com/tomasolivos/taller-mecanico](https://github.com/tomasolivos/taller-mecanico)
-
+(Como chambea la IA...)
 ---
 
-## 📌 Descripción General del Proyecto
+## Descripción General del Proyecto
 
 Este repositorio contiene la solución completa e integrada para el **Sistema de Gestión de Taller Mecánico**:
 1. **Backend:** API RESTful desarrollada con **ASP.NET Core Web API (.NET 10)**, Entity Framework Core y SQL Server, con autenticación JWT, rate limiting y cabeceras de seguridad.
@@ -17,7 +15,7 @@ Este repositorio contiene la solución completa e integrada para el **Sistema de
 
 ---
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```
 TallerMecanico/
@@ -53,20 +51,22 @@ TallerMecanico/
 
 ---
 
-## 🔑 Credenciales de Prueba Preconfiguradas
+## Credenciales de Prueba Preconfiguradas
 
 Para la evaluación y demostración del control de acceso por roles (OWASP API5:2023):
 
 | Usuario | Contraseña | Rol | Permisos y Capacidades |
 | :--- | :--- | :--- | :--- |
 | **`admin`** | `Password123!` | **`Admin`** | **Acceso total:** Listar, ver detalle, crear, editar y **eliminar** órdenes de trabajo. |
-| **`mecanico`** | `Password123!` | **`Mecanico`** | **Acceso operativo:** Listar, ver detalle, crear y editar. **Botón eliminar bloqueado en UI y rechazado con 403 Forbidden por la API**. |
+| **`mecanico`** | `Password123!` | **`Mecanico`** | **Acceso operativo:** Listar, ver detalle, crear y editar. Puede intentar eliminar desde la interfaz, pero la API rechaza la solicitud con **403 Forbidden**. |
 
 > **Nota:** La pantalla de inicio de sesión (`/login`) cuenta con botones de acceso rápido (*"Rol Admin"* y *"Rol Mecánico"*) para agilizar la demostración en vivo.
+>
+> Estas cuentas se crean automáticamente al iniciar la API en entorno `Development`, si aún no existen. No se crean en otros entornos.
 
 ---
 
-## 🚀 Instrucciones de Instalación y Puesta en Marcha
+## Instrucciones de Instalación y Puesta en Marcha
 
 ### Prerrequisitos
 * **Node.js** v18 o superior y **npm**.
@@ -107,26 +107,29 @@ cd frontend
 npm install
 npm run dev
 ```
-* La aplicación frontend se iniciará en: 👉 **`http://localhost:5173`**.
+* La aplicación frontend se iniciará en: **`http://localhost:5173`**.
 
 ---
 
 ## 🧪 Ejecución de Pruebas Automatizadas
 
 ### 1. Pruebas Unitarias y de Componentes (Frontend)
-Ejecutadas con **Vitest** y **Testing Library** con mocks de la API (12 pruebas automáticas que cubren formulario de login, validación de Zod, guard de rutas protegidas y CRUD con validación de roles):
+Ejecutadas con **Vitest** y **Testing Library** con mocks de la API (14 pruebas automáticas que cubren formulario de login, validación de Zod, guard de rutas protegidas, integración de flujo E2E y CRUD con validación de roles):
 ```powershell
 cd frontend
 npm test
+# O también:
+npm.cmd test -- --run
 ```
 *Resultado esperado:*
 ```
 ✓ src/test/ProtectedRoute.test.tsx (3 tests)
 ✓ src/test/LoginPage.test.tsx (4 tests)
+✓ src/test/FlowIntegration.test.tsx (2 tests)
 ✓ src/test/OrdenesCrud.test.tsx (5 tests)
 
-Test Files  3 passed (3)
-     Tests  12 passed (12)
+Test Files  4 passed (4)
+     Tests  14 passed (14)
 ```
 
 ### 2. Pruebas End-to-End (E2E con Playwright)
@@ -156,7 +159,7 @@ npm audit
 
 ---
 
-## 🛡️ Medidas de Seguridad Implementadas (OWASP)
+## Medidas de Seguridad Implementadas (OWASP)
 
 1. **API2:2023 Autenticación Rota:** JWT con expiración de 5 minutos, firma HMAC-SHA256, auto-logout al expirar o recibir 401, almacenamiento justificado en `sessionStorage`.
 2. **API5:2023 Autorización Rota a Nivel de Función:** El rol `Mecanico` tiene bloqueada la eliminación en frontend y recibe **403 Forbidden** si fuerza la solicitud DELETE en la API.
@@ -167,16 +170,15 @@ npm audit
 
 ---
 
-## ♿ Accesibilidad (WCAG 2.2 AA) y Diseño Responsivo
+## Accesibilidad (WCAG 2.2 AA) y Diseño Responsivo
 
 * **Accesibilidad:** Marcado semántico HTML5, navegación 100% por teclado con foco visible (`:focus-visible`), enlace de salto (*Skip to content*), trampa de foco en modales, atributos `aria-describedby` y `aria-live` en formularios, y contraste superior a 4.5:1.
 * **Diseño Responsivo:** Mobile-first desde 320 px de ancho. La tabla de órdenes de trabajo se convierte en tarjetas táctiles (*cards*) en pantallas menores a 768 px. Todos los elementos interactivos cuentan con un área mínima de **44 × 44 px**.
 
 ---
 
-## 📄 Documentación Adicional
+## Documentación Adicional
 
 * [INFORME_TECNICO.md](INFORME_TECNICO.md): Informe técnico formal con la justificación de decisiones y matriz completa de riesgos mitigados.
 * [AI_LOG.md](AI_LOG.md): Bitácora de uso de Inteligencia Artificial Generativa (herramientas, modelos, prompts y decisiones).
 * [EVIDENCIAS.md](EVIDENCIAS.md): Registros y evidencias de ejecución de pruebas unitarias, integración backend y controles de seguridad.
-
